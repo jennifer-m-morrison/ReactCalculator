@@ -4,10 +4,12 @@ import Wrapper from "./components/Wrapper";
 import Screen from "./components/Screen";
 import ButtonBox from "./components/ButtonBox";
 import Button from "./components/Button";
+import Header from "./components/Header";
 
 
 const BtnValues = [
   ["C", "+-", "%", "/"],
+  ["\u221A", "X\u00B2"],
   [7, 8, 9, "X"],
   [4, 5, 6, "-"],
   [1, 2, 3, "+"],
@@ -105,6 +107,30 @@ const App = () => {
     });
   };
 
+  const sqRootClickHandler = () => {
+    let num = calc.num ? parseFloat(removeSpaces(calc.num)) : 0;
+    let res = calc.res ? parseFloat(removeSpaces(calc.res)) : 0;
+
+    setCalc({
+      ...calc,
+      res: res >= 0 ? Math.sqrt(res) : "Not a Real Number",
+      num: num >= 0 ? Math.sqrt(num) : "Not a Real Number",
+      sign: "",
+    });
+  };
+
+  const squaredClickHandler = () => {
+    let num = calc.num ? parseFloat(removeSpaces(calc.num)) : 0;
+    let res = calc.res ? parseFloat(removeSpaces(calc.res)) : 0;
+
+    setCalc({
+      ...calc,
+      res: Math.pow(res, 2),
+      num: Math.pow(num, 2),
+      sign: "",
+    });
+  };
+
   const percentClickHandler = () => {
     let num = calc.num ? parseFloat(removeSpaces(calc.num)) : 0;
     let res = calc.res ? parseFloat(removeSpaces(calc.res)) : 0;
@@ -127,35 +153,49 @@ const App = () => {
   };
 
   return (
-    <Wrapper>
-      <Screen value={calc.num ? calc.num : calc.res} />
-      <ButtonBox>
-        {BtnValues.flat().map((btn, i) => {
-          return (
-            <Button
-              key={i}
-              className={btn === "=" ? "equals" : ""}
-              value={btn}
-              onClick={
-                btn === "C"
-                  ? resetClickHandler
-                  : btn === "+-"
-                    ? invertClickHandler
-                    : btn === "%"
-                      ? percentClickHandler
-                      : btn === "="
-                        ? equalsClickHandler
-                        : btn === "/" || btn === "X" || btn === "-" || btn === "+"
-                          ? signClickHandler
-                          : btn === "."
-                            ? commaClickHandler
-                            : numClickHandler
-              }
-            />
-          );
-        })}
-      </ButtonBox>
-    </Wrapper>
+    <div>
+      <Header />
+      <Wrapper>
+        <Screen value={calc.num ? calc.num : calc.res} />
+        <ButtonBox>
+          {BtnValues.flat().map((btn, i) => {
+            return (
+              <Button
+                key={i}
+                className={
+                  btn === "="
+                    ? "equals"
+                    : btn === "\u221A"
+                      ? "sqRoot"
+                      : btn === "X\u00B2"
+                        ? "squared"
+                        : undefined}
+                value={btn}
+                onClick={
+                  btn === "C"
+                    ? resetClickHandler
+                    : btn === "+-"
+                      ? invertClickHandler
+                      : btn === "\u221A"
+                        ? sqRootClickHandler
+                        : btn === "X\u00B2"
+                          ? squaredClickHandler
+                          : btn === "%"
+                            ? percentClickHandler
+                            : btn === "="
+                              ? equalsClickHandler
+                              : btn === "/" || btn === "X" || btn === "-" || btn === "+"
+                                ? signClickHandler
+                                : btn === "."
+                                  ? commaClickHandler
+                                  : numClickHandler
+                }
+              />
+            );
+          })}
+        </ButtonBox>
+      </Wrapper>
+    </div>
   );
 };
 
